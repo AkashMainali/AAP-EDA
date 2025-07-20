@@ -1,0 +1,21 @@
+---
+- name: Watch for new and modified files on Windows
+  hosts: all
+  sources:
+      - ansible.eda.watchdog:
+          path: C:\path\to\monitor
+          patterns:
+            - "*.txt" # Monitor only .txt files
+          recursive: true
+  rules:
+      - name: New file created
+        condition: event.type == 'created'
+        action:
+          run_playbook: #run_job_template:
+            name: ../playbooks/copy_file.yml
+
+      - name: File modified
+        condition: event.type == 'modified'
+        action:
+          run_playbook: #run_job_template:
+            name: ../playbooks/audit_file_access.yml

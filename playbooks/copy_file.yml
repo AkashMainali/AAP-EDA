@@ -1,0 +1,42 @@
+---
+## NOTE: ######################################################################################################################################
+## Copy Module (and win_copy)::
+## Purpose: To copy individual files or directories from a source to a destination.
+## Mechanism: It performs a full file transfer. If the source file is newer than the destination or doesn't exist, it copies the entire file.
+##            It does not compare the contents block-by-block.
+## Platform: It's a core Ansible function with platform-specific implementations. ansible.builtin.copy is for Linux/POSIX,
+##           and ansible.windows.win_copy uses native Windows APIs for Windows targets.
+## Best For:
+##     Deploying configuration files.
+##    Copying single, new files (like in your use case).
+##     Situations where you need a simple, reliable file transfer without complex dependencies.
+################################################################################################################################################
+## Synchronize Module (which uses rsync)::
+## Purpose: To synchronize the contents of a directory from a source to a destination, making the destination match the source efficiently.
+## Mechanism: It uses the rsync command-line tool. The key advantage is its delta transfer algorithm.
+##            It finds which parts of a file have changed and only sends those specific blocks over the network.
+## Platform: It is designed for POSIX systems (like Linux) where rsync is commonly available.
+##           Windows does not have rsync by default,
+##           so this module will fail unless you've installed a POSIX compatibility layer like Cygwin or WSL on all your Windows machines,
+##           which is generally not recommended for production automation.
+## Best For:
+##     Synchronizing large directories with many files.
+##     Updating large files (like virtual machine images or database backups) where only small parts have changed.
+##     When minimizing network traffic and transfer time is the top priority.
+##################################################################################################################################################
+- name: Copy new file to central storage
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: Ensure destination directory exists
+      ansible.windows.win_file:
+        path: "{{ central_storage_share_path }}"
+        state: directory
+
+
+    - name: Copy the new file
+      ansible.windows.win_copy:
+        src: "{{ source_file_path }}"
+        dest: "{{ central_storage_share_path }}"
+        remote_src: true

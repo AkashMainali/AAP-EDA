@@ -1,0 +1,25 @@
+---
+
+# File Copy Settings
+central_storage_server: "your_fileserver_ip_or_hostname"
+central_storage_share_path: "\\\\{{ central_storage_server }}\\share\\folder"
+
+
+
+# Auditing & Notification Settings
+admin_email: "admin@example.com"
+
+
+
+# SMTP Server Details (use Ansible Vault for passwords)
+smtp_host: "smtp.example.com"
+smtp_port: 587
+smtp_user: "your_email@example.com"
+smtp_password: "your_secret_password"  # <-- ENCRYPT THIS WITH VAULT
+
+
+# Database Connection Details (use Ansible Vault for passwords)
+db_host: "your_db_server"
+db_name: "audit_db"
+db_ser: "audit_user"
+db_password: "your_db_password" # <-- ENCRYPT THIS WITH VAULT

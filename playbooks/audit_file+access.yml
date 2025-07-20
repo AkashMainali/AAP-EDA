@@ -1,0 +1,24 @@
+---
+- name: Audit file access and send notification
+  hosts: localhost
+  gather_facts: false
+  tasks:
+
+    - name: Send email notification
+      community.general.mail:
+        host: "{{ smtp_host }}"
+        port: "{{ smtp_port }}"
+        username: "{{ smtp_user }}"
+        password: "{{ smtp_password }}"
+        to: "{{ admin_email }}"
+        subject: "File Access Alert: {{ modified_file_path }}"
+        body: "File {{ modified_file_path }} was modified at {{ access_time }}. User: Unknown"
+
+
+    - name: Log audit record to database
+      community.general.postgresql_query:
+        db: "{{ db_name }}"
+        login_host: "{{ db_host }}"
+        login_user: "{{ db_user }}"
+        login_password: "{{ db_password }}"
+        query: "INSERT INTO file_audit (file_path, accessed_by, access_time) VALUES ('{{ modified_file_path }}', 'Unknown', '{{ access_time }}');" 
