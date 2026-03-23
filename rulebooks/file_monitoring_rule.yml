@@ -1,83 +1,30 @@
-# ---
-# - name: Watch for new and modified files on Windows
-#   hosts: localhost
-#   sources:
-#     - ansible.eda.file_watch: #watchdog:
-#         path: C:\Users\Administrator\Downloads
-#         recursive: true
-#         patterns:
-#           - "*.txt"
-
-#   rules:
-#     - name: New file created
-#       condition: event.type == 'created'
-#       action:
-#         run_job_template:
-#           name: "Windows File Audit - Created"
-#           organization: "Default"
-
-#     - name: File modified
-#       condition: event.type == 'modified'
-#       action:
-#         run_job_template:
-#           name: "Windows File Audit - Modified"
-#           organization: "Default"
-
 ---
-# Ruleset 1: main watchdog ruleset
 - name: Watch for new and modified files on Windows
   hosts: localhost
-
   sources:
-    - name: filewatch
-      ansible.eda.file_watch:
-        path: "C:\\Users\\Administrator\\Downloads"
+    - ansible.eda.file_watch: #watchdog:
+        path: C:\Users\Administrator\Downloads
         recursive: true
         patterns:
           - "*.txt"
 
+    - name: httptest
+      ansible.eda.webhook:
+        host: 0.0.0.0
+        port: 5000
+        endpoint: /test
+        
   rules:
     - name: New file created
-      condition: event.type == "created"
+      condition: event.type == 'created'
       action:
         run_job_template:
           name: "Windows File Audit - Created"
           organization: "Default"
 
     - name: File modified
-      condition: event.type == "modified"
+      condition: event.type == 'modified'
       action:
         run_job_template:
           name: "Windows File Audit - Modified"
           organization: "Default"
-
-
-# Ruleset 2: optional HTTP test ruleset
-- name: Test event injector
-  hosts: localhost
-
-  sources:
-    - name: httptest
-      ansible.eda.webhook:
-        host: 0.0.0.0
-        port: 5000
-        endpoint: /test
-
-  rules:
-    - name: Inject created event into watchdog ruleset
-      condition: event.payload.event_type == "created"
-      action:
-        post_event:
-          ruleset: "Watch for new and modified files on Windows"
-          event:
-            type: "created"
-            src_path: "{{ event.payload.src_path }}"
-
-    - name: Inject modified event into watchdog ruleset
-      condition: event.payload.event_type == "modified"
-      action:
-        post_event:
-          ruleset: "Watch for new and modified files on Windows"
-          event:
-            type: "modified"
-            src_path: "{{ event.payload.src_path }}"
