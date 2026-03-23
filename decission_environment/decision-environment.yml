@@ -1,10 +1,61 @@
+# ---
+# version: 3
+
+# images:
+#   base_image:
+#     #name: aap-gateway.apps.ocp419.crucible.iisl.com/de-supported-rhel9:latest
+#     name: registry.redhat.io/ansible-automation-platform-26/de-minimal-rhel9:latest
+# dependencies:
+#   galaxy:
+#     collections:
+#       - name: ansible.eda
+#       - name: ansible.windows
+#       - name: community.windows
+#   python:
+#     - ansible-core>=2.15.0
+#     - ansible-runner>=2.3.0
+#     - pywinrm
+#     - requests-ntlm
+#     - systemd-python
+#     - six
+#     - gssapi
+#   system:
+#     - python3.11
+#     - python3.11-pip
+#     - python3.11-setuptools
+#     - python3.11-devel
+#     - java-17-openjdk-headless
+#     - pkgconf-pkg-config
+#     - gcc
+#     - systemd-devel
+#     - krb5-devel
+#     - which
+
+# options:
+#   package_manager_path: /usr/bin/microdnf
+#   skip_ansible_check: true
+
+# additional_build_steps:
+#   prepend_base:
+#     # 1. Install Python 3.11 first so the binary actually exists
+#     - RUN microdnf install -y python3.11 python3.11-pip python3.11-devel
+#     # 2. Now register it with alternatives
+#     - RUN alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 1
+#     # 3. Set it as the default
+#     - RUN alternatives --set python3 /usr/bin/python3.11
+#     # 4. Now this command will find 'python3' and work
+#     - RUN python3 -m pip install --upgrade pip setuptools
+#   append_final:
+#     - RUN ansible-galaxy collection list
+#     - ENV JAVA_HOME=/usr/lib/jvm/jre-17-openjdk
+#     - ENV PATH=$PATH:$JAVA_HOME/bin
 ---
 version: 3
 
 images:
   base_image:
-    #name: aap-gateway.apps.ocp419.crucible.iisl.com/de-supported-rhel9:latest
-    name: registry.redhat.io/ansible-automation-platform-26/de-minimal-rhel9:latest
+    name: registry.redhat.io/ansible-automation-platform-25/de-minimal-rhel9:latest
+
 dependencies:
   galaxy:
     collections:
@@ -22,13 +73,8 @@ dependencies:
   system:
     - python3.11
     - python3.11-pip
-    - python3.11-setuptools
-    - python3.11-devel
-    - java-17-openjdk-headless
-    - pkgconf-pkg-config
-    - gcc
-    - systemd-devel
-    - krb5-devel
+    - krb5-libs
+    - systemd-libs
     - which
 
 options:
@@ -37,15 +83,8 @@ options:
 
 additional_build_steps:
   prepend_base:
-    # 1. Install Python 3.11 first so the binary actually exists
-    - RUN microdnf install -y python3.11 python3.11-pip python3.11-devel
-    # 2. Now register it with alternatives
-    - RUN alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 1
-    # 3. Set it as the default
-    - RUN alternatives --set python3 /usr/bin/python3.11
-    # 4. Now this command will find 'python3' and work
-    - RUN python3 -m pip install --upgrade pip setuptools
+    - RUN microdnf install -y python3.11-devel gcc krb5-devel systemd-devel pkgconf-pkg-config
+    - RUN alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 1 && alternatives --set python3 /usr/bin/python3.11
   append_final:
-    - RUN ansible-galaxy collection list
-    - ENV JAVA_HOME=/usr/lib/jvm/jre-17-openjdk
-    - ENV PATH=$PATH:$JAVA_HOME/bin
+    - RUN microdnf remove -y gcc python3.11-devel krb5-devel systemd-devel pkgconf-pkg-config && microdnf clean all
+    - ENV PYCMD=/usr/bin/python3.11
