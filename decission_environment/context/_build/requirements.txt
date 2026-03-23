@@ -1,0 +1,7 @@
+ansible-core>=2.15.0
+ansible-runner>=2.3.0
+pywinrm
+requests-ntlm
+systemd-python
+six
+gssapi

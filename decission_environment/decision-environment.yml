@@ -3,8 +3,8 @@ version: 3
 
 images:
   base_image:
-    name: aap-gateway.apps.ocp419.crucible.iisl.com/de-supported-rhel9:latest
-    #name: registry.redhat.io/ansible-automation-platform-25/de-minimal-rhel9:latest
+    #name: aap-gateway.apps.ocp419.crucible.iisl.com/de-supported-rhel9:latest
+    name: registry.redhat.io/ansible-automation-platform-26/de-minimal-rhel9:latest
 dependencies:
   galaxy:
     collections:
@@ -33,14 +33,18 @@ dependencies:
 
 options:
   package_manager_path: /usr/bin/microdnf
+  skip_ansible_check: true
 
 additional_build_steps:
   prepend_base:
-    # 1. Install Python 3.11 and C-headers
-    - RUN microdnf install -y python3.11 python3.11-pip systemd-devel pkgconf-pkg-config gcc krb5-devel
-    # 2. Force the 'python3' command to point to 3.11 so the builder's check succeeds
+    # 1. Install Python 3.11 first so the binary actually exists
+    - RUN microdnf install -y python3.11 python3.11-pip python3.11-devel
+    # 2. Now register it with alternatives
+    - RUN alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 1
+    # 3. Set it as the default
     - RUN alternatives --set python3 /usr/bin/python3.11
-    - RUN python3 -m pip install --upgrade pip
+    # 4. Now this command will find 'python3' and work
+    - RUN python3 -m pip install --upgrade pip setuptools
   append_final:
     - RUN ansible-galaxy collection list
     - ENV JAVA_HOME=/usr/lib/jvm/jre-17-openjdk

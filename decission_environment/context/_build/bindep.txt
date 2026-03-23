@@ -1,0 +1,10 @@
+python3.11
+python3.11-pip
+python3.11-setuptools
+python3.11-devel
+java-17-openjdk-headless
+pkgconf-pkg-config
+gcc
+systemd-devel
+krb5-devel
+which
