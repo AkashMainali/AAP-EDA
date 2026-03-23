@@ -1,0 +1,6 @@
+# requirements.txt for DE
+# Intentionally minimal. Do NOT include systemd-python.
+# For now you can leave this empty, or add only what you truly need, e.g.:
+# aiohttp
+# requests
+
