@@ -1,13 +1,8 @@
 ---
 - name: Watch for new and modified files on Windows
   hosts: localhost
-  sources:
-    # - community.eda.file_watch: #watchdog:
-    #     path: C:\Users\Administrator\Downloads
-    #     recursive: true
-    #     patterns:
-    #       - "*.txt"
 
+  sources:
     - name: File Monitor
       ansible.eda.webhook:
         host: 0.0.0.0
@@ -21,10 +16,8 @@
         run_job_template:
           name: "Windows File Audit - Created"
           organization: "Default"
-          job_args:
-            extra_vars:
-              # Map the source payload to a variable named 'eda_payload'
-              eda_payload: "{{ ansible_eda.events.payload }}"
+          extra_vars:              # <- move extra_vars here
+            eda_payload: "{{ event.payload }}"
 
     - name: File modified
       condition: event.payload.event_type == 'modified'
@@ -32,7 +25,5 @@
         run_job_template:
           name: "Windows File Audit - Modified"
           organization: "Default"
-          job_args:
-            extra_vars:
-              # Map the source payload to a variable named 'eda_payload'
-              eda_payload: "{{ ansible_eda.events.payload }}"
+          extra_vars:
+            eda_payload: "{{ event.payload }}"
