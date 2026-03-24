@@ -24,7 +24,7 @@
           job_args:
             extra_vars:
               # Map the source payload to a variable named 'eda_payload'
-              eda_payload: "{{ event.payload }}"
+              eda_payload: "{{ ansible_eda.events.payload }}"
 
     - name: File modified
       condition: event.payload.event_type == 'modified'
@@ -35,4 +35,4 @@
           job_args:
             extra_vars:
               # Map the source payload to a variable named 'eda_payload'
-              eda_payload: "{{ event.payload }}"
+              eda_payload: "{{ ansible_eda.events.payload }}"
