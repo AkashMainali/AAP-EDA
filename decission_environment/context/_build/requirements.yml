@@ -2,3 +2,4 @@ collections:
 - name: ansible.eda
 - name: ansible.windows
 - name: community.windows
+- name: community.eda

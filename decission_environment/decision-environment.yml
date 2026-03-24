@@ -54,7 +54,7 @@ version: 3
 
 images:
   base_image:
-    name: registry.redhat.io/ansible-automation-platform-25/de-minimal-rhel9:latest
+    name: registry.redhat.io/ansible-automation-platform-26/de-minimal-rhel9:latest
 
 dependencies:
   galaxy:
@@ -62,19 +62,23 @@ dependencies:
       - name: ansible.eda
       - name: ansible.windows
       - name: community.windows
+      - name: community.eda
   python:
     - ansible-core>=2.15.0
     - ansible-runner>=2.3.0
+    - ansible-rulebook
     - pywinrm
     - requests-ntlm
     - systemd-python
     - six
     - gssapi
   system:
-    - python3.11
-    - python3.11-pip
     - krb5-libs
     - systemd-libs
+    - gcc
+    - krb5-devel
+    - systemd-devel
+    - pkgconf-pkg-config
     - which
 
 options:
@@ -83,8 +87,30 @@ options:
 
 additional_build_steps:
   prepend_base:
-    - RUN microdnf install -y python3.11-devel gcc krb5-devel systemd-devel pkgconf-pkg-config
-    - RUN alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 1 && alternatives --set python3 /usr/bin/python3.11
+    - RUN microdnf install -y gcc python3.12-devel krb5-devel systemd-devel pkgconf-pkg-config
+
   append_final:
-    - RUN microdnf remove -y gcc python3.11-devel krb5-devel systemd-devel pkgconf-pkg-config && microdnf clean all
-    - ENV PYCMD=/usr/bin/python3.11
+    # 1. Ensure ansible-rulebook is installed under Python 3.12
+    - RUN /usr/bin/python3.12 -m pip install --upgrade ansible-rulebook
+
+    # 2. Fix shebang at the correct pip install location
+    - RUN sed -i '1s|.*|#!/usr/bin/python3.12|' /usr/local/bin/ansible-rulebook
+
+    # 3. Symlink to /usr/bin so the EDA worker can find it at the expected path
+    - RUN ln -sf /usr/local/bin/ansible-rulebook /usr/bin/ansible-rulebook
+
+    # 4. Verify the module is importable — fails the build early if broken
+    - RUN /usr/bin/python3.12 -c "import ansible_rulebook; print('ansible_rulebook OK')"
+
+    # 5. Clean up
+    - RUN rm -rf /output
+
+    # 6. Fix permissions
+    - RUN mkdir -p /runner/.ansible/tmp /tmp/ansible && chmod -R g+w /runner /tmp/ansible && chgrp -R 0 /runner /tmp/ansible
+
+    # 7. Environment & User switch
+    - ENV HOME=/runner
+    - ENV ANSIBLE_LOCAL_TMP=/tmp/ansible
+    - ENV PYCMD=/usr/bin/python3.12
+    - WORKDIR /runner
+    - USER 1001

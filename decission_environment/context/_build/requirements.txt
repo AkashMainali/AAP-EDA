@@ -1,5 +1,6 @@
 ansible-core>=2.15.0
 ansible-runner>=2.3.0
+ansible-rulebook
 pywinrm
 requests-ntlm
 systemd-python

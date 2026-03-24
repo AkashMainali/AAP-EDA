@@ -2,18 +2,18 @@
 - name: Watch for new and modified files on Windows
   hosts: localhost
   sources:
-    - ansible.eda.file_watch: #watchdog:
-        path: C:\Users\Administrator\Downloads
-        recursive: true
-        patterns:
-          - "*.txt"
+    # - ansible.eda.file_watch: #watchdog:
+    #     path: C:\Users\Administrator\Downloads
+    #     recursive: true
+    #     patterns:
+    #       - "*.txt"
 
     - name: httptest
       ansible.eda.webhook:
         host: 0.0.0.0
         port: 5000
         endpoint: /test
-        
+
   rules:
     - name: New file created
       condition: event.type == 'created'
