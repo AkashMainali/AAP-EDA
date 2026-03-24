@@ -26,12 +26,10 @@
 ##################################################################################################################################################
 - name: Copy new file to central storage
   hosts: all
-  gather_facts: true
+  gather_facts: false
   vars:
     backup_dir: C:/backup
   tasks:
-    - name: Ping the windows machine
-      ansible.windows.win_ping:
 
     - name: Get Complete payload
       ansible.builtin.debug:
