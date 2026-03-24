@@ -53,5 +53,6 @@
     - name: Copy the backup file
       ansible.windows.win_copy:
         src: "{{ ansible_eda.event.payload.path }}"
-        dest: "{{backup_dir}}/{{ ansible_eda.event.payload.path }}.{{ansible_eda.event.payload.timestamp}}"
+        dest: "{{ backup_dir }}\\{{ source_basename }}.{{ clean_timestamp }}"
         remote_src: true
+      register: copy_result
