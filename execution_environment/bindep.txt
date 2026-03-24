@@ -1,0 +1,2 @@
+# System packages are installed directly via microdnf in execution-environment.yml
+# bindep.txt intentionally left empty to avoid dnf calls in the assemble script

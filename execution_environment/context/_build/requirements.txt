@@ -1,0 +1,9 @@
+# Windows connectivity
+pywinrm>=0.4.3
+requests-kerberos>=0.14.0
+requests-ntlm>=1.2.0
+requests-credssp>=2.0.0
+
+# General utilities
+xmltodict>=0.13.0
+packaging>=23.0

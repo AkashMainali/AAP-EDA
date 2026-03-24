@@ -1,0 +1,3 @@
+# Block systemd-python — pulled transitively by collections but not needed
+# for Windows automation and requires libsystemd headers unavailable in base image
+systemd-python==0.0.0+blocked; python_version >= "0"
