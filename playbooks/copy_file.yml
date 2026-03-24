@@ -30,16 +30,14 @@
   vars:
     backup_dir:
   tasks:
-    - name: Print the full event payload
-      ansible.builtin.debug:
-        var: eda_payload
+
     - name: Get eda_payload.timestamp
       ansible.builtin.debug:
-        var: eda_payload.ansible_eda.event.payload.timestamp
+        var: ansible_eda.event.payload.timestamp
 
     - name: Get eda_payload.path
       ansible.builtin.debug:
-        var: eda_payload.ansible_eda.event.payload.path
+        var: ansible_eda.event.payload.path
 
     - name: Ping the windows machine
       ansible.windows.win_ping:
