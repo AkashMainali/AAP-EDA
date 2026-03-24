@@ -16,16 +16,15 @@
 
     - name: Get basename of source file
       ansible.builtin.set_fact:
-        source_basename: "{{ ansible_eda.event.payload.path | regex_replace('^.*\\\\', '') }}"
+        source_basename: "{{ ansible_eda.event.payload.path | basename | regex_replace('[^a-zA-Z0-9._-]', '_') }}"
 
-    - name: Ensure Backup directory exists
-      ansible.windows.win_file:
-        path: "{{ backup_dir }}"
-        state: directory
-
-    - name: Copy the backup file
+    - name: Copy the backup file (quoted path handles spaces)
       ansible.windows.win_copy:
-        src: "{{ ansible_eda.event.payload.path }}"
+        src: "{{ ansible_eda.event.payload.path | quote }}"
         dest: "{{ backup_dir }}\\{{ source_basename }}.{{ clean_timestamp }}"
         remote_src: true
       register: copy_result
+
+    - name: Show backup location
+      ansible.builtin.debug:
+        msg: "Backup created at: {{ copy_result.dest }}"
