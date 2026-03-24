@@ -16,7 +16,7 @@
         run_job_template:
           name: "Windows File Audit - Created"
           organization: "Default"
-          extra_vars:              # <- move extra_vars here
+          extra_vars:
             eda_payload: "{{ event.payload }}"
 
     - name: File modified
