@@ -28,9 +28,15 @@
   hosts: all
   gather_facts: true
   vars:
-    backup_dir:
+    backup_dir: C:/backup
   tasks:
+    - name: Ping the windows machine
+      ansible.windows.win_ping:
 
+    - name: Get Complete payload
+      ansible.builtin.debug:
+        var: ansible_eda.event.payload
+        
     - name: Get eda_payload.timestamp
       ansible.builtin.debug:
         var: ansible_eda.event.payload.timestamp
@@ -39,16 +45,13 @@
       ansible.builtin.debug:
         var: ansible_eda.event.payload.path
 
-    - name: Ping the windows machine
-      ansible.windows.win_ping:
+    - name: Ensure Backup directory exists
+      ansible.windows.win_file:
+        path: "{{ backup_dir }}"
+        state: directory
 
-    # - name: Ensure Backup directory exists
-    #   ansible.windows.win_file:
-    #     path: "{{ backup_dir }}"
-    #     state: directory
-
-    # - name: Copy the backup file
-    #   ansible.windows.win_copy:
-    #     src: "{{ eda_payload.path }}.{{eda_payload.timestamp}}"
-    #     dest: "{{backup_dir}}/{{ central_storage_share_path }}"
-    #     remote_src: true
+    - name: Copy the backup file
+      ansible.windows.win_copy:
+        src: "{{ ansible_eda.event.payload.path }}"
+        dest: "{{backup_dir}}/{{ ansible_eda.event.payload.path }}.{{ansible_eda.event.payload.timestamp}}"
+        remote_src: true
