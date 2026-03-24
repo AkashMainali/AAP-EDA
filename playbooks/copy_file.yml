@@ -16,14 +16,33 @@
 
     - name: Get basename of source file
       ansible.builtin.set_fact:
-        source_basename: "{{ ansible_eda.event.payload.path | basename | regex_replace('[^a-zA-Z0-9._-]', '_') }}"
+        # Use regex to extract just the filename from a Windows path
+        source_basename: "{{ ansible_eda.event.payload.path | regex_replace('^.*\\\\', '') | regex_replace('[^a-zA-Z0-9._-]', '_') }}"
 
-    - name: Copy the backup file (quoted path handles spaces)
+    - name: Wait for file to exist and be ready
+      ansible.windows.win_shell: |
+        $timeout = 15
+        $elapsed = 0
+        while (-not (Test-Path "{{ ansible_eda.event.payload.path }}") -and $elapsed -lt $timeout) {
+          Start-Sleep -Seconds 1
+          $elapsed++
+        }
+        if (-not (Test-Path "{{ ansible_eda.event.payload.path }}")) {
+          exit 1
+        }
+        exit 0
+      register: wait_result
+      failed_when: wait_result.rc != 0
+
+    - name: Copy the backup file
       ansible.windows.win_copy:
-        src: "{{ ansible_eda.event.payload.path | quote }}"
+        src: "{{ ansible_eda.event.payload.path }}"
         dest: "{{ backup_dir }}\\{{ source_basename }}.{{ clean_timestamp }}"
         remote_src: true
       register: copy_result
+      retries: 3
+      delay: 2
+      until: copy_result is not failed
 
     - name: Show backup location
       ansible.builtin.debug:
