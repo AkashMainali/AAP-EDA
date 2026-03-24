@@ -36,14 +36,14 @@
     - name: Get Complete payload
       ansible.builtin.debug:
         var: ansible_eda.event.payload
-        
-    - name: Get eda_payload.timestamp
-      ansible.builtin.debug:
-        var: ansible_eda.event.payload.timestamp
 
-    - name: Get eda_payload.path
-      ansible.builtin.debug:
-        var: ansible_eda.event.payload.path
+    - name: Create clean timestamp for filename
+      ansible.builtin.set_fact:
+        clean_timestamp: "{{ ansible_eda.event.payload.timestamp | regex_replace('[:Z]', '-') }}"
+
+    - name: Get basename of source file
+      ansible.builtin.set_fact:
+        source_basename: "{{ ansible_eda.event.payload.path | regex_replace('^.*\\\\', '') }}"
 
     - name: Ensure Backup directory exists
       ansible.windows.win_file:
