@@ -26,7 +26,7 @@
     - name: Copy the backup file
       ansible.windows.win_copy:
         src: "{{ normalized_path }}"
-        dest: "{{ backup_dir }}\\{{ source_basename }}.{{ clean_timestamp }}"
+        dest: "{{ backup_dir }}\\{{ clean_timestamp }}{{ source_basename }}"
         remote_src: true
       register: copy_result
 
