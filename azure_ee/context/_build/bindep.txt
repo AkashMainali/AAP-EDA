@@ -1,0 +1,2 @@
+gcc [platform:rpm]
+python3-devel [platform:rpm]

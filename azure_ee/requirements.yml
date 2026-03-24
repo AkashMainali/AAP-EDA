@@ -1,0 +1,25 @@
+---
+collections:
+  - name: azure.azcollection
+
+  - name: ansible.utils
+  
+  - name: ansible.netcommon
+    # Core Windows support
+  - name: ansible.windows
+
+
+  # Extended Windows modules
+  - name: community.windows
+
+
+  # Package management via Chocolatey
+  - name: chocolatey.chocolatey
+
+
+  # Active Directory management
+  - name: microsoft.ad
+
+
+  # Ansible utilities (useful for filters/lookups)
+  - name: ansible.utils

@@ -1,0 +1,25 @@
+---
+collections:
+  - name: azure.azcollection
+    version: ">=2.0.0"
+  - name: ansible.utils
+  - name: ansible.netcommon
+    # Core Windows support
+  - name: ansible.windows
+    version: ">=2.0.0"
+
+  # Extended Windows modules
+  - name: community.windows
+    version: ">=2.0.0"
+
+  # Package management via Chocolatey
+  - name: chocolatey.chocolatey
+    version: ">=1.5.0"
+
+  # Active Directory management
+  - name: microsoft.ad
+    version: ">=1.0.0"
+
+  # Ansible utilities (useful for filters/lookups)
+  - name: ansible.utils
+    version: ">=3.0.0"
