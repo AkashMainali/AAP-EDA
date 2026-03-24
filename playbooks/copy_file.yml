@@ -32,8 +32,9 @@
     - name: Print the full event payload
       ansible.builtin.debug:
         var: eda_payload
-    - name: Ping the windows machine\
-      win_ping:
+
+    - name: Ping the windows machine
+      ansible.windows.win_ping:
 
     # - name: Ensure destination directory exists
     #   ansible.windows.win_file:
