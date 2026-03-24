@@ -19,15 +19,15 @@
         # Use regex to extract just the filename from a Windows path
         source_basename: "{{ ansible_eda.event.payload.path | regex_replace('^.*\\\\', '') | regex_replace('[^a-zA-Z0-9._-]', '_') }}"
 
+    - name: Normalize path separators
+      ansible.builtin.set_fact:
+        normalized_path: "{{ ansible_eda.event.payload.path | regex_replace('\\\\\\\\', '\\\\') }}"
+
     - name: Copy the backup file
       ansible.windows.win_copy:
-        src: "{{ ansible_eda.event.payload.path }}"
+        src: "{{ normalized_path }}"
         dest: "{{ backup_dir }}\\{{ source_basename }}.{{ clean_timestamp }}"
         remote_src: true
-      register: copy_result
-      retries: 3
-      delay: 2
-      until: copy_result is not failed
 
     - name: Show backup location
       ansible.builtin.debug:
