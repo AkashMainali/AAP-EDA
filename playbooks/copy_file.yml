@@ -25,18 +25,21 @@
 ##     When minimizing network traffic and transfer time is the top priority.
 ##################################################################################################################################################
 - name: Copy new file to central storage
-  hosts: localhost
+  hosts: all
   gather_facts: false
 
   tasks:
-    - name: Ensure destination directory exists
-      ansible.windows.win_file:
-        path: "{{ central_storage_share_path }}"
-        state: directory
+    - name: Ping the windows machine\
+      win_ping:
+      
+    # - name: Ensure destination directory exists
+    #   ansible.windows.win_file:
+    #     path: "{{ central_storage_share_path }}"
+    #     state: directory
 
 
-    - name: Copy the new file
-      ansible.windows.win_copy:
-        src: "{{ source_file_path }}"
-        dest: "{{ central_storage_share_path }}"
-        remote_src: true
+    # - name: Copy the new file
+    #   ansible.windows.win_copy:
+    #     src: "{{ source_file_path }}"
+    #     dest: "{{ central_storage_share_path }}"
+    #     remote_src: true
