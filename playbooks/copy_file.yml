@@ -29,6 +29,9 @@
   gather_facts: true
 
   tasks:
+    - name: Print the full event payload
+      ansible.builtin.debug:
+        var: eda_payload
     - name: Ping the windows machine\
       win_ping:
 
