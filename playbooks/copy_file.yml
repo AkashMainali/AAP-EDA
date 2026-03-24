@@ -28,6 +28,7 @@
         src: "{{ normalized_path }}"
         dest: "{{ backup_dir }}\\{{ source_basename }}.{{ clean_timestamp }}"
         remote_src: true
+      register: copy_result
 
     - name: Show backup location
       ansible.builtin.debug:
