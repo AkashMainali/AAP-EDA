@@ -21,6 +21,10 @@
         run_job_template:
           name: "Windows File Audit - Created"
           organization: "Default"
+          job_args:
+            extra_vars:
+              # Map the source payload to a variable named 'eda_payload'
+              eda_payload: "{{ event.payload }}"
 
     - name: File modified
       condition: event.payload.event_type == 'modified'
@@ -28,3 +32,7 @@
         run_job_template:
           name: "Windows File Audit - Modified"
           organization: "Default"
+          job_args:
+            extra_vars:
+              # Map the source payload to a variable named 'eda_payload'
+              eda_payload: "{{ event.payload }}"
