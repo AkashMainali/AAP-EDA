@@ -2,7 +2,7 @@
 - name: Watch for new and modified files on Windows
   hosts: localhost
   sources:
-    # - ansible.eda.file_watch: #watchdog:
+    # - community.eda.file_watch: #watchdog:
     #     path: C:\Users\Administrator\Downloads
     #     recursive: true
     #     patterns:
@@ -16,14 +16,14 @@
 
   rules:
     - name: New file created
-      condition: event.type == 'created'
+      condition: event.payload.event_type == 'created'
       action:
         run_job_template:
           name: "Windows File Audit - Created"
           organization: "Default"
 
     - name: File modified
-      condition: event.type == 'modified'
+      condition: event.payload.event_type == 'modified'
       action:
         run_job_template:
           name: "Windows File Audit - Modified"
