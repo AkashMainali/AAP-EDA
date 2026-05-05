@@ -1,0 +1,17 @@
+version: 3
+
+images:
+  base_image:
+    name: registry.redhat.io/ansible-automation-platform-26/ee-supported-rhel9:latest
+
+options:
+  package_manager_path: /usr/bin/microdnf
+
+dependencies:
+  python: requirements.txt
+  system: bindep.txt
+
+additional_build_steps:
+  prepend_base:
+    # Ensure we install python3.12-devel specifically
+    - RUN microdnf install -y --nodocs python3.12-devel systemd-devel pkg-config gcc make krb5-devel libssh-devel openssl-devel && microdnf clean all

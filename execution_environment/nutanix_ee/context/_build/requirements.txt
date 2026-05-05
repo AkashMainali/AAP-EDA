@@ -1,0 +1,20 @@
+# Windows connectivity
+pywinrm>=0.4.3
+requests-kerberos>=0.14.0
+requests-ntlm>=1.2.0
+requests-credssp>=2.0.0
+
+# Nutanix SDK
+ntnx-clustermgmt-py-client==4.2.2
+ntnx-iam-py-client==4.1.2b2
+ntnx-microseg-py-client==4.2.2
+ntnx-networking-py-client==4.3.1
+ntnx-prism-py-client==4.3.1
+ntnx-vmm-py-client==4.2.2
+ntnx-volumes-py-client==4.2.2
+ntnx-dataprotection-py-client==4.3.1
+ntnx-datapolicies-py-client==4.2.2
+ntnx-lifecycle-py-client==4.2.2
+ntnx-objects-py-client==4.0.3
+ntnx-security-py-client==4.1.2
+ntnx-licensing-py-client==4.3.2

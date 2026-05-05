@@ -1,0 +1,8 @@
+python3.12-devel [compile]
+systemd-devel [compile]
+pkg-config [compile]
+gcc [compile]
+make [compile]
+krb5-devel [compile]
+libssh-devel [compile]
+openssl-devel [compile]
